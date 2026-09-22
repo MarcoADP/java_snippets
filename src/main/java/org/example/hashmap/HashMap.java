@@ -1,5 +1,7 @@
 package org.example.hashmap;
 
+import java.util.Optional;
+
 public class HashMap<K, V> {
 
     private static final int DEFAULT_CAPACITY = 16;
@@ -7,7 +9,6 @@ public class HashMap<K, V> {
 
     private int capacity;
     private float loadFactor;
-    private int size;
     private Node<K, V>[] table;
 
     public HashMap() {
@@ -21,51 +22,32 @@ public class HashMap<K, V> {
     }
 
     public void put(K key, V value) {
-        int hash = hash(key);
-        int index = getIndex(hash);
-        Node<K, V> current = table[index];
+        var hash = hash(key);
+        var index = getIndex(hash);
 
-        while (current != null) {
-            if (current.hash == hash && equals(current.key, key)) {
-                current.value = value;
+        var node = this.table[index];
+        while (node != null) {
+            if (node.key == key) {
+                node.value = value;
                 return;
             }
-            current = current.next;
+            node = node.next;
         }
+        var newNode = new Node<>(hash, key, value, table[index]);
+        this.table[index] = newNode;
 
-        Node<K, V> newNode = new Node<>(hash, key, value, table[index]);
-        table[index] = newNode;
-        size++;
-        if (size > table.length * loadFactor) {
+        if (this.table.length > (capacity * loadFactor)) {
             resize();
         }
+
     }
 
     private int getIndex(int hash) {
-
         return hash & (table.length - 1);
     }
 
     private int hash(K key) {
-
-        if (key == null) {
-            return 0;
-        }
-        int hash = key.hashCode();
-        return hash ^ (hash >>> 16);
-    }
-
-    private boolean equals(K key1, K key2) {
-
-        if (key1 == key2) {
-            return true;
-        }
-
-        if (key1 == null || key2 == null) {
-            return false;
-        }
-
-        return key1.equals(key2);
+        return key.hashCode();
     }
 
     private void resize() {
@@ -85,8 +67,25 @@ public class HashMap<K, V> {
         }
     }
 
-    public int size() {
-        return size;
+    public V get(K key) {
+        var hash = hash(key);
+        var index = getIndex(hash);
+        var node = this.table[index];
+        while (node != null) {
+            if (node.key == key) {
+                return node.value;
+            }
+            node = node.next;
+        }
+        return null;
+    }
+
+    public Optional<V> getOptional(K key) {
+        return Optional.ofNullable(get(key));
+    }
+
+    public V getOptionalOrDefault(K key, V defaultValue) {
+        return getOptional(key).orElse(defaultValue);
     }
 
     @Override
