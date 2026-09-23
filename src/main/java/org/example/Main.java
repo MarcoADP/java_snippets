@@ -14,7 +14,7 @@ public class Main {
     }
 
     private static void testConcurrentHashMap() throws InterruptedException {
-        var concurrentMap = new ConcurrentHashMap<>(20, 0.75f);
+        var concurrentMap = new ConcurrentHashMap<>(5);
 
         Thread thread1 = new Thread(() -> {
             for (int i = 0; i < 5; i++) {

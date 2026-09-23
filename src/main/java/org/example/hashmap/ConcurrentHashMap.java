@@ -1,8 +1,7 @@
 package org.example.hashmap;
 
-import org.example.lock.ReadWriteLock;
-
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReferenceArray;
 
 public class ConcurrentHashMap<K, V> {
 
@@ -10,98 +9,100 @@ public class ConcurrentHashMap<K, V> {
     private static final float DEFAULT_LOAD_FACTOR = 0.75f;
 
     private int capacity;
-    private float loadFactor;
-    private Node<K, V>[] table;
-    private ReadWriteLock lock;
+    private final float loadFactor;
+    private volatile AtomicReferenceArray<VolatileNode<K, V>> table;
     private int size = 0;
 
     public ConcurrentHashMap() {
         this(DEFAULT_CAPACITY, DEFAULT_LOAD_FACTOR);
     }
 
+    public ConcurrentHashMap(int capacity) {
+        this(capacity, DEFAULT_LOAD_FACTOR);
+    }
+
     public ConcurrentHashMap(int capacity, float loadFactor) {
         this.capacity = capacity;
         this.loadFactor = loadFactor;
-        this.table = (Node<K, V>[]) new Node[capacity];
-        this.lock = new ReadWriteLock();
+        this.table = new AtomicReferenceArray<>(capacity);
     }
 
     public void put(K key, V value) {
         var hash = hash(key);
         var index = getIndex(hash);
 
-        try {
+        while (true) {
 
-            lock.addWriteLock(value.toString());
+            AtomicReferenceArray<VolatileNode<K, V>> currentTable = table;
+            var currentNode = currentTable.get(index);
 
-            var node = this.table[index];
-            while (node != null) {
-                if (node.key == key) {
-                    node.value = value;
+            if (currentNode == null) {
+                var newNode = new VolatileNode<>(hash, key, value);
+                if (currentTable.compareAndSet(index, null, newNode)) {
+
+                    testResize(currentTable);
                     return;
                 }
-                node = node.next;
-            }
-            var newNode = new Node<>(hash, key, value, table[index]);
-            this.table[index] = newNode;
-            this.size++;
 
-            System.out.printf("%s -- %s%n", this.size, capacity * loadFactor);
-            if (this.size > (capacity * loadFactor)) {
-                System.out.println("Resizing....");
-                resize();
+                continue;
             }
 
-        } catch (Exception e) {
-            System.out.println(e);
-        } finally {
-            lock.unlockWriteLock();
+            synchronized (currentNode) {
+                var node = currentTable.get(index);
+
+                while (true) {
+                    if (node.hash == hash && node.key.equals(key)) {
+                        node.value = value;
+                        return;
+                    }
+
+                    if (node.next == null) {
+                        break;
+                    }
+
+                    node = node.next;
+                }
+
+                node.next = new VolatileNode<>(hash, key, value);
+                testResize(currentTable);
+
+                return;
+
+            }
+
+        }
+    }
+
+    private void testResize(AtomicReferenceArray<VolatileNode<K, V>> currentTable) {
+        size++;
+
+        if (size > currentTable.length() * this.loadFactor) {
+            resize();
         }
     }
 
     private int getIndex(int hash) {
-        return hash & (table.length - 1);
+        return hash & (table.length() - 1);
     }
 
     private int hash(K key) {
-        return key.hashCode();
-    }
-
-    private void resize() {
-
-        Node<K, V>[] oldTable = table;
-        this.capacity = oldTable.length * 2;
-        Node<K, V>[] newTable = new Node[capacity];
-        table = newTable;
-
-        for (Node<K, V> node : oldTable) {
-            while (node != null) {
-                Node<K, V> next = node.next;
-                int index = getIndex(node.hash);
-                node.next = newTable[index];
-                newTable[index] = node;
-                node = next;
-            }
-        }
+        var hash = key.hashCode();
+        return hash ^ (hash >>> 16);
     }
 
     public V get(K key) {
-        try {
-            lock.addReadLock(key.toString());
-            var hash = hash(key);
-            var index = getIndex(hash);
-            var node = this.table[index];
-            while (node != null) {
-                if (node.key == key) {
-                    return node.value;
-                }
-                node = node.next;
+        var hash = hash(key);
+        var index = getIndex(hash);
+        var node = this.table.get(index);
+
+        while (node != null) {
+            if (node.hash == hash && node.key.equals(key)) {
+                return node.value;
             }
-        } catch (Exception e) {
-            System.out.println(e);
-        } finally {
-            lock.unlockRead();
+
+            node = node.next;
         }
+
         return null;
     }
 
@@ -113,14 +114,38 @@ public class ConcurrentHashMap<K, V> {
         return getOptional(key).orElse(defaultValue);
     }
 
-    @Override
-    public String toString() {
-        var str = "";
-        for (var node : table) {
-            if (node != null) {
-                str += node + " hash: " + hash(node.key) + "\n";
+    private void resize() {
+        int oldCapacity = capacity;
+        int newCapacity = this.capacity * 2;
+        System.out.printf("resizing... %s to %s -- Table: %s%n", oldCapacity, newCapacity, table.length());
+
+        AtomicReferenceArray<VolatileNode<K, V>> newTable = new AtomicReferenceArray<>(newCapacity);
+
+        for (int i = 0; i < oldCapacity; i++) {
+            var node = table.get(i);
+
+            while (node != null) {
+                var next = node.next;
+                int newIndex = node.hash & (newCapacity - 1);
+                node.next = newTable.get(newIndex);
+                newTable.set(newIndex, node);
+                node = next;
             }
         }
-        return str;
+
+        this.capacity = newCapacity;
+        this.table = newTable;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder str = new StringBuilder();
+        for (int i = 0; i < table.length(); i++) {
+            var node = table.get(i);
+            if (node != null) {
+                str.append(node).append(" hash: ").append(hash(node.key)).append("\n");
+            }
+        }
+        return str.toString();
     }
 }
