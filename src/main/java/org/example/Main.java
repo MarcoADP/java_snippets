@@ -2,15 +2,60 @@ package org.example;
 
 import org.example.hashmap.ConcurrentHashMap;
 import org.example.hashmap.HashMap;
+import org.example.list.Transaction;
+import org.example.queue.PriorityQueue;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
 
     public static void main(String[] args) throws InterruptedException {
-        testHashMap();
-        testThreadHashMap();
-        testConcurrentHashMap();
+//        testHashMap();
+//        testThreadHashMap();
+//        testConcurrentHashMap();
+        //testComparator();
+        testPriorityQueue();
+    }
+
+    private static void testPriorityQueue() {
+        var queue = new PriorityQueue<Integer>(10);
+        queue.add(2);
+        queue.add(1);
+        queue.add(5);
+        queue.add(3);
+        System.out.println("Q Size:  => " + queue.size());
+        var size = queue.size();
+        System.out.println(queue);
+        System.out.println(queue.peek());
+        var copy = queue.copy();
+        for (int i = 0; i < size; i++) {
+            System.out.println(i + " => " + queue.poll());
+        }
+        System.out.println(copy);
+    }
+
+
+    private static void testComparator() {
+        var transactions = new ArrayList<Transaction>();
+        transactions.add(new Transaction(LocalDate.now(), BigDecimal.valueOf(100), "A", "C"));
+        transactions.add(new Transaction(LocalDate.now().minusDays(1), BigDecimal.valueOf(200), "B", "C"));
+        transactions.add(new Transaction(LocalDate.now(), BigDecimal.valueOf(300), "A", "B"));
+        transactions.add(new Transaction(LocalDate.now().minusDays(1), BigDecimal.valueOf(400), "A", "C"));
+        transactions.add(new Transaction(LocalDate.now().minusDays(1), BigDecimal.valueOf(100), "A", "C"));
+        System.out.println(transactions);
+
+        transactions.sort(Comparator.comparing(Transaction::date, Comparator.reverseOrder())
+                .thenComparing(Transaction::origin)
+                .thenComparing(Transaction::destination)
+                .thenComparing(Transaction::value)
+        );
+        System.out.println(transactions);
+
     }
 
     private static void testConcurrentHashMap() throws InterruptedException {
