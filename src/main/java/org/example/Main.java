@@ -2,12 +2,12 @@ package org.example;
 
 import org.example.hashmap.ConcurrentHashMap;
 import org.example.hashmap.HashMap;
+import org.example.list.ArrayList;
 import org.example.list.Transaction;
 import org.example.queue.PriorityQueue;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Comparator;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
@@ -19,7 +19,30 @@ public class Main {
 //        testThreadHashMap();
 //        testConcurrentHashMap();
         //testComparator();
-        testPriorityQueue();
+        //testPriorityQueue();
+        testArrayList();
+    }
+
+    private static void testArrayList() {
+        var lista = new ArrayList<Integer>();
+        for (var i = 0; i < 15; i++) {
+            lista.add(i);
+        }
+        System.out.println(lista);
+        System.out.println(lista.get(5));
+        System.out.println(lista.getFirst());
+        System.out.println(lista.getLast());
+        System.out.printf("Contains 5? => %s%n", lista.contains(5));
+
+        lista.removeAt(5);
+        System.out.println(lista.get(5));
+        lista.removeFirst();
+        lista.removeLast();
+        lista.remove(5);
+        lista.remove(10);
+        System.out.println(lista);
+        System.out.printf("Contains 5? => %s%n", lista.contains(5));
+
     }
 
     private static void testPriorityQueue() {
@@ -41,13 +64,15 @@ public class Main {
 
 
     private static void testComparator() {
-        var transactions = new ArrayList<Transaction>();
-        transactions.add(new Transaction(LocalDate.now(), BigDecimal.valueOf(100), "A", "C"));
+        var transactions = new java.util.ArrayList<Transaction>();
+        Transaction transaction = new Transaction(LocalDate.now(), BigDecimal.valueOf(100), "A", "C");
+        transactions.add(transaction);
         transactions.add(new Transaction(LocalDate.now().minusDays(1), BigDecimal.valueOf(200), "B", "C"));
         transactions.add(new Transaction(LocalDate.now(), BigDecimal.valueOf(300), "A", "B"));
         transactions.add(new Transaction(LocalDate.now().minusDays(1), BigDecimal.valueOf(400), "A", "C"));
         transactions.add(new Transaction(LocalDate.now().minusDays(1), BigDecimal.valueOf(100), "A", "C"));
         System.out.println(transactions);
+        transactions.get(0);
 
         transactions.sort(Comparator.comparing(Transaction::date, Comparator.reverseOrder())
                 .thenComparing(Transaction::origin)
@@ -55,6 +80,8 @@ public class Main {
                 .thenComparing(Transaction::value)
         );
         System.out.println(transactions);
+        transactions.remove(0);
+        transactions.remove(transaction);
 
     }
 
