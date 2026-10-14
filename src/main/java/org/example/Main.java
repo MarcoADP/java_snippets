@@ -8,6 +8,7 @@ import org.example.list.LinkedList;
 import org.example.list.Transaction;
 import org.example.queue.PriorityQueue;
 import org.example.stack.StackArray;
+import org.example.stack.StackLinkedList;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -30,23 +31,50 @@ public class Main {
 
     private static void testStackArray() {
         var stackArray = new StackArray<Integer>(1);
+        var stackLinkedList = new StackLinkedList<Integer>();
+
         stackArray.push(1);
         stackArray.push(2);
         stackArray.push(3);
+        stackLinkedList.push(1);
+        stackLinkedList.push(2);
+        stackLinkedList.push(3);
         System.out.println(stackArray);
+        System.out.println(stackLinkedList);
+
         System.out.printf("Find 2: %s\n", stackArray.search(2));
+        System.out.printf("Find 2: %s\n", stackLinkedList.search(2));
+
         System.out.printf("POP: %s\n", stackArray.pop());
+        System.out.printf("POP: %s\n", stackLinkedList.pop());
+
         stackArray.push(4);
         stackArray.push(5);
+        stackLinkedList.push(4);
+        stackLinkedList.push(5);
         System.out.println(stackArray);
+        System.out.println(stackLinkedList);
+
         System.out.printf("PEEK: %s\n", stackArray.peek());
+        System.out.printf("PEEK: %s\n", stackLinkedList.peek());
+
         System.out.printf("Find 3: %s\n", stackArray.search(3));
+        System.out.printf("Find 3: %s\n", stackLinkedList.search(3));
+
         stackArray.push(2);
+        stackLinkedList.push(2);
         System.out.printf("Find 2: %s\n", stackArray.search(2));
+        System.out.printf("Find 2: %s\n", stackLinkedList.search(2));
+
         stackArray.push(6);
+        stackLinkedList.push(6);
         System.out.println(stackArray);
+        System.out.println(stackLinkedList);
+
         stackArray.clear();
+        stackLinkedList.clear();
         System.out.println(stackArray);
+        System.out.println(stackLinkedList);
     }
 
     private static void testLinkedList() {

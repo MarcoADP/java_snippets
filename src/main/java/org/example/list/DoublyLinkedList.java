@@ -82,7 +82,7 @@ public class DoublyLinkedList<T> {
         size++;
     }
 
-    private TwoWayNode<T> getNode(int index) {
+    public TwoWayNode<T> getNode(int index) {
         int half = size / 2;
         if (index < half) {
             return getNodeFromBeginning(index);
@@ -159,6 +159,10 @@ public class DoublyLinkedList<T> {
         }
         previous.addNext(null);
         this.last = previous;
+
+        l.addPrevious(null);
+        l.addNext(null);
+
         size--;
         return l.getElement();
     }
