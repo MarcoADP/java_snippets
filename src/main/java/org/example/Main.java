@@ -3,6 +3,8 @@ package org.example;
 import org.example.hashmap.ConcurrentHashMap;
 import org.example.hashmap.HashMap;
 import org.example.list.ArrayList;
+import org.example.list.DoublyLinkedList;
+import org.example.list.LinkedList;
 import org.example.list.Transaction;
 import org.example.queue.PriorityQueue;
 
@@ -20,7 +22,159 @@ public class Main {
 //        testConcurrentHashMap();
         //testComparator();
         //testPriorityQueue();
-        testArrayList();
+        //testArrayList();
+        testLinkedList();
+    }
+
+    private static void testLinkedList() {
+        var linkedListUtils = new java.util.LinkedList<Integer>();
+        var linkedList = new LinkedList<Integer>();
+        var doublyLinkedList = new DoublyLinkedList<Integer>();
+
+        linkedListUtils.addFirst(100);
+        linkedList.addFirst(100);
+        doublyLinkedList.addFirst(100);
+        System.out.println("\n Adding 100 in the beginning");
+        System.out.println("java.util.LinkedList: " + linkedListUtils);
+        System.out.println("my LinkedList:        " + linkedList);
+        System.out.println("my doublyLinkedList:  " + doublyLinkedList);
+
+        linkedListUtils.add(1, 111);
+        linkedList.add(1, 111);
+        doublyLinkedList.add(1, 111);
+        System.out.println("\n Adding 111 at index 1");
+        System.out.println("java.util.LinkedList: " + linkedListUtils);
+        System.out.println("my LinkedList:        " + linkedList);
+        System.out.println("my doublyLinkedList:  " + doublyLinkedList);
+
+        linkedListUtils.removeFirst();
+        linkedList.removeFirst();
+        doublyLinkedList.removeFirst();
+        System.out.println("\nRemoving first");
+        System.out.println("java.util.LinkedList: " + linkedListUtils);
+        System.out.println("first my LinkedList:  " + linkedList);
+        System.out.println("my doublyLinkedList:  " + doublyLinkedList);
+
+        linkedListUtils.removeLast();
+        linkedList.removeLast();
+        doublyLinkedList.removeLast();
+        System.out.println("\nRemoving last");
+        System.out.println("java.util.LinkedList: " + linkedListUtils);
+        System.out.println("my LinkedList:        " + linkedList);
+        System.out.println("my doublyLinkedList:  " + doublyLinkedList);
+
+        linkedListUtils.add(1);
+        linkedList.add(1);
+        doublyLinkedList.add(1);
+        System.out.println("\n Adding 1");
+        System.out.println("java.util.LinkedList: " + linkedListUtils);
+        System.out.println("my LinkedList:        " + linkedList);
+        System.out.println("my doublyLinkedList:  " + doublyLinkedList);
+
+        linkedListUtils.add(3);
+        linkedList.add(3);
+        doublyLinkedList.add(3);
+        System.out.println("\n Adding 3");
+        System.out.println("java.util.LinkedList: " + linkedListUtils);
+        System.out.println("my LinkedList:        " + linkedList);
+        System.out.println("my doublyLinkedList:  " + doublyLinkedList);
+
+        linkedListUtils.removeLast();
+        linkedList.removeLast();
+        doublyLinkedList.removeLast();
+        System.out.println("\nRemoving last");
+        System.out.println("java.util.LinkedList: " + linkedListUtils);
+        System.out.println("my LinkedList:        " + linkedList);
+        System.out.println("my doublyLinkedList:  " + doublyLinkedList);
+
+        linkedListUtils.add(2);
+        linkedList.add(2);
+        doublyLinkedList.add(2);
+        System.out.println("\n Adding 2");
+        System.out.println("java.util.LinkedList: " + linkedListUtils);
+        System.out.println("my LinkedList:        " + linkedList);
+        System.out.println("my doublyLinkedList:  " + doublyLinkedList);
+
+        linkedListUtils.remove();
+        linkedList.remove();
+        doublyLinkedList.remove();
+        System.out.println("\n Removing");
+        System.out.println("java.util.LinkedList: " + linkedListUtils);
+        System.out.println("my LinkedList:        " + linkedList);
+        System.out.println("my doublyLinkedList:  " + doublyLinkedList);
+
+        linkedListUtils.add(4);
+        linkedList.add(4);
+        doublyLinkedList.add(4);
+        System.out.println("\n Adding 4");
+        System.out.println("java.util.LinkedList: " + linkedListUtils);
+        System.out.println("my LinkedList:        " + linkedList);
+        System.out.println("my doublyLinkedList:  " + doublyLinkedList);
+
+        linkedListUtils.add(2, 99);
+        linkedList.add(2, 99);
+        doublyLinkedList.add(2, 99);
+        System.out.println("\n Adding 99 at index 2");
+        System.out.println("java.util.LinkedList: " + linkedListUtils);
+        System.out.println("my LinkedList:        " + linkedList);
+        System.out.println("my doublyLinkedList:  " + doublyLinkedList);
+
+        System.out.println("\nContains 4?");
+        System.out.println("java.util.LinkedList: " + linkedListUtils.contains(4));
+        System.out.println("my LinkedList:        " + linkedList.contains(4));
+        System.out.println("my doublyLinkedList:  " + doublyLinkedList.contains(4));
+
+        linkedListUtils.remove(1);
+        linkedList.removeAt(1);
+        doublyLinkedList.removeAt(1);
+        System.out.println("\n Removing at index 1");
+        System.out.println("java.util.LinkedList: " + linkedListUtils);
+        System.out.println("my LinkedList:        " + linkedList);
+        System.out.println("my doublyLinkedList:  " + doublyLinkedList);
+
+        System.out.println("\nContains 4?");
+        System.out.println("java.util.LinkedList: " + linkedListUtils.contains(4));
+        System.out.println("my LinkedList:        " + linkedList.contains(4));
+        System.out.println("my doublyLinkedList:  " + doublyLinkedList.contains(4));
+
+        linkedListUtils.add(0, 77);
+        linkedList.add(0, 77);
+        doublyLinkedList.add(0, 77);
+        System.out.println("\n Adding 77 at index 0");
+        System.out.println("java.util.LinkedList: " + linkedListUtils);
+        System.out.println("my LinkedList:        " + linkedList);
+        System.out.println("my doublyLinkedList:  " + doublyLinkedList);
+
+        linkedListUtils.addLast(10);
+        linkedList.addLast(10);
+        doublyLinkedList.addLast(10);
+        System.out.println("\n Adding 10");
+        System.out.println("java.util.LinkedList: " + linkedListUtils);
+        System.out.println("my LinkedList:        " + linkedList);
+        System.out.println("my doublyLinkedList:  " + doublyLinkedList);
+
+        System.out.println("\n my LinkedList:        " + linkedList);
+        System.out.println(linkedList.get(0));
+        System.out.println(linkedList.get(1));
+        System.out.println(linkedList.get(2));
+        System.out.println(linkedList.get(3));
+
+        System.out.println("\n my doublyLinkedList:  " + doublyLinkedList);
+        System.out.println(doublyLinkedList.get(0));
+        System.out.println(doublyLinkedList.get(1));
+        System.out.println(doublyLinkedList.get(2));
+        System.out.println(doublyLinkedList.get(3));
+
+        System.out.println("\nclearing");
+        linkedListUtils.clear();
+        linkedList.clear();
+        doublyLinkedList.clear();
+        System.out.println("java.util.LinkedList: " + linkedListUtils);
+        System.out.println("my LinkedList:        " + linkedList);
+        System.out.println("my doublyLinkedList:  " + doublyLinkedList);
+
+
+
     }
 
     private static void testArrayList() {
