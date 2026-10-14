@@ -7,6 +7,7 @@ import org.example.list.DoublyLinkedList;
 import org.example.list.LinkedList;
 import org.example.list.Transaction;
 import org.example.queue.PriorityQueue;
+import org.example.stack.StackArray;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -23,7 +24,29 @@ public class Main {
         //testComparator();
         //testPriorityQueue();
         //testArrayList();
-        testLinkedList();
+        //testLinkedList();
+        testStackArray();
+    }
+
+    private static void testStackArray() {
+        var stackArray = new StackArray<Integer>(1);
+        stackArray.push(1);
+        stackArray.push(2);
+        stackArray.push(3);
+        System.out.println(stackArray);
+        System.out.printf("Find 2: %s\n", stackArray.search(2));
+        System.out.printf("POP: %s\n", stackArray.pop());
+        stackArray.push(4);
+        stackArray.push(5);
+        System.out.println(stackArray);
+        System.out.printf("PEEK: %s\n", stackArray.peek());
+        System.out.printf("Find 3: %s\n", stackArray.search(3));
+        stackArray.push(2);
+        System.out.printf("Find 2: %s\n", stackArray.search(2));
+        stackArray.push(6);
+        System.out.println(stackArray);
+        stackArray.clear();
+        System.out.println(stackArray);
     }
 
     private static void testLinkedList() {
