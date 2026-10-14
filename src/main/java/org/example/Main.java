@@ -24,9 +24,9 @@ public class Main {
 //        testConcurrentHashMap();
         //testComparator();
         //testPriorityQueue();
-        //testArrayList();
+        testArrayList();
         //testLinkedList();
-        testStackArray();
+        //testStackArray();
     }
 
     private static void testStackArray() {

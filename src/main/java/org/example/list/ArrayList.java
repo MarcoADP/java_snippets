@@ -1,8 +1,12 @@
 package org.example.list;
 
+import org.example.iterator.Iterable;
+import org.example.iterator.Iterator;
+
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
-public class ArrayList<T> {
+public class ArrayList<T> implements Iterable<T> {
 
     public static final int DEFAULT_CAPACITY = 10;
 
@@ -22,8 +26,6 @@ public class ArrayList<T> {
         this.capacity = capacity;
     }
 
-
-
     public void add(T newElement) {
         if (size == capacity) {
             resize();
@@ -33,7 +35,7 @@ public class ArrayList<T> {
     }
 
     private void resize() {
-        var newCapacity = (int) (1.5 * capacity);
+        var newCapacity = 2 * capacity;
         var newArray = new Object[newCapacity];
 
         for (var i = 0; i < size; i++) {
@@ -78,6 +80,7 @@ public class ArrayList<T> {
         }
 
         this.size--;
+        this.elements[this.size] = null;
 
     }
 
@@ -87,7 +90,7 @@ public class ArrayList<T> {
 
     public void removeLast() {
         if (isEmpty()) {
-            return;
+            throw new IndexOutOfBoundsException("Index: " + -1 + ", Size: " + size);
         }
         this.elements[size - 1] = null;
         this.size--;
@@ -120,10 +123,53 @@ public class ArrayList<T> {
 
     @Override
     public String toString() {
-        var builder = new StringBuilder();
-        for (var i = 0; i < size ; i++) {
-            builder.append("%s | ".formatted(elements[i]));
+        var builder = new StringBuilder("[");
+        var iterator = this.iterator();
+        while (iterator.hasNext()) {
+            builder.append("%s".formatted(iterator.next()));
+            if (iterator.hasNext()) {
+                builder.append(", ");
+            }
         }
+        builder.append("]");
         return builder.toString();
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return new Iterator<>() {
+
+            private int cursor = 0;
+            private int lastReturned = -1;
+
+            @Override
+            public boolean hasNext() {
+                return cursor < size;
+            }
+
+            @Override
+            public T next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+
+                lastReturned = cursor;
+                var element = get(cursor);
+                cursor++;
+                return element;
+            }
+
+            @Override
+            public void remove() {
+                if (lastReturned == -1) {
+                    throw new IllegalStateException("Call next() before remove()");
+                }
+
+                removeAt(lastReturned);
+
+                cursor = lastReturned;
+                lastReturned = -1;
+            }
+        };
     }
 }
