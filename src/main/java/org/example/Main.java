@@ -24,12 +24,12 @@ public class Main {
 //        testConcurrentHashMap();
         //testComparator();
         //testPriorityQueue();
-        testArrayList();
+        //testArrayList();
         //testLinkedList();
-        //testStackArray();
+        testStack();
     }
 
-    private static void testStackArray() {
+    private static void testStack() {
         var stackArray = new StackArray<Integer>(1);
         var stackLinkedList = new StackLinkedList<Integer>();
 

@@ -1,9 +1,12 @@
 package org.example.list;
 
+import org.example.iterator.Iterable;
+import org.example.iterator.Iterator;
+
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
-public class DoublyLinkedList<T> {
+public class DoublyLinkedList<T> implements Iterable<T> {
 
     private TwoWayNode<T> first;
     private TwoWayNode<T> last;
@@ -13,16 +16,29 @@ public class DoublyLinkedList<T> {
 
     @Override
     public String toString() {
+        var iterator = this.iterator();
         var builder = new StringBuilder("[");
-        var node = first;
-        while (node != null) {
-            builder.append(node.getElement());
-            if (node.getNext() != null) {
+        while (iterator.hasNext()) {
+            builder.append(iterator.next());
+            if (iterator.hasNext()) {
                 builder.append(", ");
             }
-            node = node.getNext();
         }
         return builder.append("]").toString();
+    }
+
+    public T getFirst() {
+        if (isEmpty()) {
+            throw new NoSuchElementException();
+        }
+        return first.getElement();
+    }
+
+    public T getLast() {
+        if (isEmpty()) {
+            throw new NoSuchElementException();
+        }
+        return last.getElement();
     }
 
     public void add(T element) {
@@ -204,5 +220,54 @@ public class DoublyLinkedList<T> {
         this.first = null;
         this.last = null;
         this.size = 0;
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return new Iterator<T>() {
+
+            private TwoWayNode<T> next = first;
+
+            @Override
+            public boolean hasNext() {
+                return Objects.nonNull(next);
+            }
+
+            @Override
+            public T next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+
+                var element = next.getElement();
+                next = next.getNext();
+                return element;
+
+            }
+        };
+    }
+
+    public Iterator<T> descendingIterator() {
+        return new Iterator<T>() {
+
+            private TwoWayNode<T> previous = last;
+
+            @Override
+            public boolean hasNext() {
+                return Objects.nonNull(previous);
+            }
+
+            @Override
+            public T next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+
+                var element = previous.getElement();
+                previous = previous.getPrevious();
+                return element;
+
+            }
+        };
     }
 }

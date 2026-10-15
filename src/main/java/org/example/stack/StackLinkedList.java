@@ -25,7 +25,7 @@ public class StackLinkedList<T> {
         if (isEmpty()) {
             throw new NoSuchElementException();
         }
-        return this.elements.get(this.size()-1);
+        return this.elements.getLast();
     }
 
     public boolean isEmpty() {
@@ -40,16 +40,14 @@ public class StackLinkedList<T> {
         this.elements.clear();
     }
 
-    // TODO Iterator
     public int search(T element) {
-        var node = this.elements.getNode(this.size()-1);
+        var iterator = this.elements.descendingIterator();
         var position = 1;
-        while (Objects.nonNull(node)) {
-            if (Objects.equals(node.getElement(), element)) {
+        while (iterator.hasNext()) {
+            if (Objects.equals(iterator.next(), element)) {
                 return position;
             }
             position++;
-            node = node.getPrevious();
         }
         return -1;
     }
@@ -57,13 +55,12 @@ public class StackLinkedList<T> {
     @Override
     public String toString() {
         var builder = new StringBuilder("[");
-        var node = this.elements.getNode(this.size()-1);
-        while (Objects.nonNull(node)) {
-            builder.append(node.getElement());
-            if (Objects.nonNull(node.getPrevious())) {
+        var iterator = this.elements.descendingIterator();
+        while (iterator.hasNext()) {
+            builder.append(iterator.next());
+            if (iterator.hasNext()) {
                 builder.append(", ");
             }
-            node = node.getPrevious();
         }
         builder.append("]");
         return builder.toString();
