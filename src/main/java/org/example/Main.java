@@ -7,6 +7,7 @@ import org.example.list.DoublyLinkedList;
 import org.example.list.LinkedList;
 import org.example.list.Transaction;
 import org.example.queue.PriorityQueue;
+import org.example.queue.Queue;
 import org.example.stack.StackArray;
 import org.example.stack.StackLinkedList;
 
@@ -26,7 +27,24 @@ public class Main {
         //testPriorityQueue();
         //testArrayList();
         //testLinkedList();
-        testStack();
+        //testStack();
+        testQueue();
+    }
+
+    private static void testQueue() {
+        var queue = new Queue<Integer>();
+        queue.add(1);
+        queue.add(2);
+        queue.add(3);
+        System.out.println(queue);
+        System.out.println(queue.poll());
+        System.out.println(queue.peek());
+        queue.add(4);
+
+        System.out.println(queue);
+        System.out.println(queue.last());
+        queue.clear();
+        System.out.println(queue);
     }
 
     private static void testStack() {
